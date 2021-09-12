@@ -1,0 +1,26 @@
+# make sure that your dns has a cname set for Shinobi
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name shinobi.*;
+    include /config/nginx/ssl.conf;
+
+    client_max_body_size 0;
+
+    location / {
+        include /config/nginx/proxy.conf;
+        proxy_pass http://YOUR-IP-ADDRESS:YOUR-PORT-NUMBER;
+	      proxy_set_header Upgrade $http_upgrade;
+	      proxy_set_header Connection 'upgrade';
+	      proxy_set_header Host $host;            
+  }
+    location /socket.io/ { 
+         proxy_pass http://YOUR-IP-ADDRESS:YOUR-PORT-NUMBER;
+         proxy_http_version 1.1;
+         proxy_set_header Upgrade $http_upgrade;
+         proxy_set_header Connection "Upgrade";
+         proxy_set_header Host $host;
+     }
+}
